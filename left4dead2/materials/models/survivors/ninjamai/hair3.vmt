@@ -1,0 +1,24 @@
+"VertexLitGeneric"
+{
+	$basetexture "models\survivors\ninjamai\Hair3_D"
+	$bumpmap "models\survivors\ninjamai\Hair3_N"
+
+	"$ambientocclusion" "0"
+	//"$alphatest" "1"
+	//$allowdiffusemodulation 0
+	//$allowalphatocoverage 1
+	//"$alphatestreference"	"0.50"
+	"$translucent" "1"
+	$allowalphatocoverage 1
+	"$nocull" "1"
+	$nodecal 1
+
+	"$phong" "1"
+	"$phongboost" ".08"
+	"$phongexponent" "10"
+	"$phongfresnelranges" "[.1 .1 .1]"
+        "$phongtint" "[48 22 0]"
+
+	"$alphatest" "1"
+	"$allowalphatocoverage" "1"
+}

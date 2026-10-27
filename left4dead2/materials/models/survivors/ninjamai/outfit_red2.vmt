@@ -1,0 +1,83 @@
+"VertexlitGeneric"
+{
+	"$basetexture" 		"models\survivors\ninjamai/Outfit_Red2_D"
+	"$bumpmap" 		"models\survivors\ninjamai/Outfit_Red2_N"
+	"$nocull" 			"1"
+	"$nodecal" 		"1"
+	"$model" 			"1"
+	
+	"$phong" 			"1"
+	$phongdisablehalflambert 	"0"
+	"$phongalbedotint" 		"1"
+	"$phongalbedoboost" 	"20"
+	"$phongboost" 		"3"
+	//$phongexponent		"5"
+	"$phongexponenttexture" 	"models\survivors\ninjamai/Outfit_Red2_G"
+	"$phongfresnelranges"           	"[3 1.0 40]"
+
+	"$basemapalphaenvmapmask" 1
+	"$envmap" 		"env_cubemap"
+	$envmapfresnel 1
+	$envmapFresnelMinMaxExp "[0 1 .4]"
+	$envmaptint 		"[0.001 0.001 0.001]"
+
+	"$rimlight" 		"1" 
+	"$rimlightexponent" 		"20"
+	"$rimlightboost" 		"1"
+
+	"$detail"				"models\survivors\ninjamai\Outfit_Detail"
+	"$detailscale" 			"22"
+	$detailblendfactor			1.75
+
+	$ambientocclusion 		1
+	"$lightwarptexture"	 	"models\survivors\ninjamai/Outfit_LW"
+
+////////////////////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////////////////////
+
+	$rand		0
+	$skinfamily	0
+	$zero		0
+	$one		1
+	
+
+"Proxies"
+{
+
+////////////////////////////////////////////////////////////////////////////////
+// RNG Blue / Red
+////////////////////////////////////////////////////////////////////////////////
+
+	EntityRandom  
+       	{
+           		scale 		"2"
+           		resultVar 		"$rand"
+       	}
+
+	LessOrEqual
+     	{
+          	  	LessEqualVar 	"$skinfamily"
+          	  	greaterVar 	"$rand"
+          	  	srcVar1 		"$rand"
+           	  	srcVar2 		"$zero"            
+          	  	resultVar 		"$skinfamily"    
+       	}
+
+	LessOrEqual
+     	{
+          	  	LessEqualVar 	"$zero"
+          	  	greaterVar 	"$one"
+          	  	srcVar1 		"$skinfamily"
+           	  	srcVar2 		"$one"            
+          	  	resultVar 		"$frame"    
+       	}
+
+
+
+
+
+}
+
+
+}

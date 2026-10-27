@@ -1,0 +1,399 @@
+"VertexLitGeneric"
+{	
+	"$basetexture" 			"models\survivors\ninjamai\Body_D"
+	"$bumpmap" 			"models\survivors\ninjamai\Body_Wet_N"
+	"$nocull" 				"1"
+	"$nodecal" 			"1"
+	"$model" 				"1"
+	//$color2				"[1.1 1.1 1.1]"
+	$nocompress			1
+
+	"$phong" 			"1"
+	"$phongboost" 			"9"
+	$phongfresnelranges 		"[.5 .1 2]"
+	$phongexponenttexture       		"models\survivors\ninjamai\Body_Wet_G"
+	$phongalbedotint 			1
+
+	"$envmap" 			"env_cubemap"
+	$normalmapalphaenvmapmask	1
+	"$envmaptint" 			"[.05 .05 .05]"	
+	$envmapfresnel 			1
+	$envmapFresnelMinMaxExp		 "[0 .8 .3]"
+
+	"$rimlight" 			"1" 
+	"$rimlightexponent" 			"1"
+	"$rimlightboost" 			"1.6"
+
+	"$detail"				"models\survivors\ninjamai\Body_Detail2"
+	"$detailscale" 			"40"
+	$detailblendfactor			1
+
+	"$lightwarptexture" 			"models\survivors\ninjamai\Body_LW2"
+	$ambientocclusion 			1
+
+	"$alphatest"			"1"
+	"$alphatestreference"		".99"
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "Distance Travelled" VMT Modifer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Variables
+////////////////////////////////////////////////////////////////////////////////
+
+	$skinperfamily		6
+
+	$targetone 		170
+	$targettwo		320
+	$targetthree		510
+	$targetfour		770
+	$targetfive		1000
+
+	$targetalpha		120
+
+//------------------------------------------------------------------
+
+	$monn			"-0.1"
+	$zero 			0
+	$one 			1
+	$two			2
+	$three			3
+	$four			4
+	$five			5
+	$fh			500
+
+	$teamget			0
+	$team			0
+	$teamstore		0
+	$teamdiff			0
+	$sinecheck		0
+	$doreset			0
+	$checkperiod		0
+
+	$speedsend		0
+	$speedlimit		70
+
+	$wetramp			0
+	$rampcorr			0
+	$rampfinal		0
+	$corrstatic		0
+
+	$rjv			0
+	$rjvtwo			0
+	$ramppredisplay		0
+	$rampdisplay		0
+
+	$preparestore		0
+	$dostore			0
+	$previousstop		0
+	$hasbeenstored		0
+
+	$rand			0
+	$preinject			0
+	$skincorr			0
+	$skinfamily		0
+
+	$teamcorrramp		0
+	$teamcorrrampcorr		0
+	$teamtime		0
+	$infectedmaxrespawntime	30
+
+////////////////////////////////////////////////////////////////////////////////
+// Proxies 
+////////////////////////////////////////////////////////////////////////////////
+
+
+"Proxies"
+{
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// CORE OF THE CODE
+///////////////////////////////////////////////////////////////////////////////////
+// The "Core" part generates a variable : $rampfinal ; this variable stores the number of
+// seconds the player spent walking, It can be used for diverses applications. 
+// You can modify "PlayerSpeed" by "EntitySpeed" to apply that stuff to survivors
+///////////////////////////////////////////////////////////////////////////////////
+
+	EntitySpeed			
+      	{			
+          	 	scale		"1"
+          	 	resultVar 		"$speedsend"
+       	}
+
+
+//------------------------------------------------------------------------------ Team Reset Start
+
+	PlayerTeam							
+      	{		
+		team		3		
+		resultVar 		"$teamget"
+       	}
+
+	////////////////////////////////////////////////////////////
+	// Correction for the Team Glitch 
+	////////////////////////////////////////////////////////////
+	// - Removing this block and changing the above $teamget into $team will result in no "30sec delay to ensure team" but will disable the RealDMG when playing Infected.
+	
+	LinearRamp						
+	{					
+		rate 		"1"			
+		resultVar 		"$teamcorrramp"
+	}
+
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$teamcorrrampcorr"
+          		greaterVar 	"$teamcorrramp"
+          	 	srcVar1 		"$teamget"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$teamcorrrampcorr"    
+       	}
+
+	Subtract								
+      	{
+		srcVar1		"$teamcorrramp"
+		srcVar2 		"$teamcorrrampcorr"
+		resultVar 		"$teamtime"
+       	 }
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$one"
+          		greaterVar 	"$teamget"
+          	 	srcVar1 		"$teamtime"
+           	  	srcVar2 		"$infectedmaxrespawntime"          
+          	 	resultVar 		"$team"    
+       	}
+
+	////////////////////////////////////////////////////////////
+	
+	Sine							
+      	{
+		sineperiod	"5"
+          	  	sinemin		"-2"
+          		sinemax		"98"  
+          	 	resultVar 		"$sinecheck"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$team"
+          		greaterVar 	"$teamstore"
+          	 	srcVar1 		"$sinecheck"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$teamstore"    
+       	}
+
+	Subtract							
+      	{
+          	 	srcVar1 		"$teamstore"
+           	  	srcVar2 		"$team"          
+          	 	resultVar 		"$teamdiff"    
+       	}
+
+	Abs						
+      	{
+          	 	srcVar1 		"$teamdiff"     
+          	 	resultVar 		"$teamdiff"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$zero"
+          		greaterVar 	"$one"
+          	 	srcVar1 		"$teamdiff"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$doreset"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$zero"
+          		greaterVar 	"$doreset"
+          	 	srcVar1 		"$sinecheck"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$doreset"    
+       	}
+
+//------------------------------------------------------------------------------ Team Reset End
+
+//------------------------------------------------------------------------------ Get Last Stop Start
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$one"
+          		greaterVar 	"$zero"
+          	 	srcVar1 		"$speedsend"
+           	  	srcVar2 		"$speedlimit"          
+          	 	resultVar 		"$preparestore"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$preparestore"
+          		greaterVar 	"$zero"
+          	 	srcVar1 		"$hasbeenstored"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$dostore"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$previousstop"
+          		greaterVar 	"$rampfinal"
+          	 	srcVar1 		"$dostore"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$previousstop"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$hasbeenstored"
+          		greaterVar 	"$one"
+          	 	srcVar1 		"$dostore"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$hasbeenstored"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$hasbeenstored"
+          		greaterVar 	"$zero"
+          	 	srcVar1 		"$speedsend"
+           	  	srcVar2 		"$speedlimit"          
+          	 	resultVar 		"$hasbeenstored"    
+       	}
+
+	Subtract							
+      	{
+		srcVar1		"$wetramp"
+		srcVar2 		"$previousstop"
+		resultVar 		"$corrstatic"
+       	 }
+
+//------------------------------------------------------------------------------ Get Last Stop End
+
+
+//------------------------------------------------------------------------------ While Loop Start
+				
+	LinearRamp											
+	{						
+		rate 		"1"			
+		resultVar 		"$wetramp"
+	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$corrstatic"
+          		greaterVar 	"$rampcorr"
+          	 	srcVar1 		"$speedsend"
+           	  	srcVar2 		"$speedlimit"          
+          	 	resultVar 		"$rampcorr"    
+       	}
+
+
+
+	Subtract							
+      	{
+		srcVar1		"$wetramp"
+		srcVar2 		"$rampcorr"
+		resultVar 		"$rampfinal"
+       	 }
+
+
+//------------------------------------------------------------------------------ While Loop End
+
+////////////////////////////////////////////////////////////////////////////////
+// RNG Blue / Red
+////////////////////////////////////////////////////////////////////////////////
+
+	EntityRandom  
+       	{
+           		scale 		"2"
+           		resultVar 		"$rand"
+       	}
+
+	LessOrEqual
+     	{
+          	  	LessEqualVar 	"$skinfamily"
+          	  	greaterVar 	"$rand"
+          	  	srcVar1 		"$rand"
+           	  	srcVar2 		"$zero"            
+          	  	resultVar 		"$skinfamily"    
+       	}
+
+	LessOrEqual
+     	{
+          	  	LessEqualVar 	"$zero"
+          	  	greaterVar 	"$skinperfamily"
+          	  	srcVar1 		"$skinfamily"
+           	  	srcVar2 		"$one"            
+          	  	resultVar 		"$skincorr"    
+       	}
+
+////////////////////////////////////////////////////////////////////////////////
+// INJECTOR DEPENDING ON THE CODE
+////////////////////////////////////////////////////////////////////////////////
+
+//------------------------------------------------------------------------------ Reset Injector Start
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$wetramp"
+          		greaterVar 	"$rjv"
+          	 	srcVar1 		"$rjv"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$rjv"    
+       	}
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$rjvtwo"
+          		greaterVar 	"$ramppredisplay"
+          	 	srcVar1 		"$doreset"
+           	  	srcVar2 		"$zero"          
+          	 	resultVar 		"$rjvtwo"    
+       	}
+
+//------------------------------------------------------------------------------ Reset Injector End
+
+	Subtract							
+      	{
+		srcVar1		"$rampfinal"
+		srcVar2 		"$rjv"
+		resultVar 		"$ramppredisplay"
+       	 }
+
+	Subtract							
+      	{
+		srcVar1		"$ramppredisplay"
+		srcVar2 		"$rjvtwo"
+		resultVar 		"$rampdisplay"
+       	 }
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$zero"
+          		greaterVar 	"$one"
+          	 	srcVar1 		"$rampdisplay"
+           	  	srcVar2 		"$targettwo"          
+          	 	resultVar 		"$frame"    
+       	}
+
+
+	LessOrEqual							
+      	{
+          	  	LessEqualVar 	"$zero"
+          		greaterVar 	"$one"
+          	 	srcVar1 		"$rampdisplay"
+           	  	srcVar2 		"$targetalpha"          
+          	 	resultVar 		"$alpha"    
+       	}
+
+
+
+
+}
+
+}

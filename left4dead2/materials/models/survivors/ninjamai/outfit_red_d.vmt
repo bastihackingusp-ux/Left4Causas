@@ -1,0 +1,4 @@
+patch
+{
+include "materials\models\survivors\ninjamai\outfit_red.vmt"
+}

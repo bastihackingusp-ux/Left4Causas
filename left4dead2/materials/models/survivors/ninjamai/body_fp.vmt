@@ -1,0 +1,34 @@
+"VertexLitGeneric"
+{	
+	"$basetexture" 			"models\survivors\ninjamai\Body_D"
+	"$bumpmap" 			"models\survivors\ninjamai\Body_Wet_N"
+	"$nocull" 				"1"
+	"$nodecal" 			"1"
+	"$model" 				"1"
+	//$color2				"[1.1 1.1 1.1]"
+	$nocompress			1
+
+	"$phong" 				"1"
+	"$phongboost" 			"20"
+	$phongfresnelranges 		"[.1 .2 15]"
+	$phongexponent			"35"
+	$phongalbedotint 			1
+
+	"$envmap" 			"env_cubemap"
+	$normalmapalphaenvmapmask	1
+	"$envmaptint" 			"[.1 .1 .1]"	
+	$envmapfresnel 			1
+	$envmapFresnelMinMaxExp		 "[0 1 .4]"
+
+	"$rimlight" 			"1" 
+	"$rimlightexponent" 			"1"
+	"$rimlightboost" 			"2.3"
+	$rimmask				1
+
+	"$detail"				"models\survivors\ninjamai\Body_Detail2"
+	"$detailscale" 			"40"
+	$detailblendfactor			1
+
+	"$lightwarptexture" 			"models\survivors\ninjamai\Body_LW2"
+	$ambientocclusion 			1
+}

@@ -1,0 +1,27 @@
+"VertexLitGeneric"
+{
+	$basetexture "models\survivors\ninjamai\Hair2_D"
+	$bumpmap "models\survivors\ninjamai\Hair2_N"
+
+	"$ambientocclusion" "0"
+	"$alphatest" "1"
+	//$allowdiffusemodulation 0
+	//$allowalphatocoverage 1
+	"$alphatestreference"	"0.50"
+	//"$translucent" "1"
+	$allowalphatocoverage 1
+	"$nocull" "1"
+	$nodecal 1
+
+	"$phong" "1"
+	$phongexponent 12
+	"$phongboost"	"0.1"
+	"$phongalbedotint" 1
+	$phongfresnelranges "[.1 1 1]"
+
+	"$lightwarptexture" "models\survivors\ninjamai/Hair_PW"
+
+	"$envmaptint" "[0.78 0.59 0.56]" 
+	"$phongwarptexture" "models\survivors\ninjamai/Hair_PW"
+	//$halflambert 1
+}
